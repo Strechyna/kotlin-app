@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class PizzaService(
-    val toppingRepository: ToppingRepository,
-    val customerRepository: CustomerRepository
+    private val toppingRepository: ToppingRepository,
+    private val customerRepository: CustomerRepository
 ) {
     @Transactional
     fun submitToppings(chosenToppings: ChosenToppings) {
@@ -38,10 +38,9 @@ class PizzaService(
             .map { toppingCount -> ToppingInfo(toppingCount.getName(), toppingCount.getCountResult()) })
     }
 
-    fun getToppingsByCustomer(email: String): ChosenToppings {
-        return customerRepository.findById(email).map { customer ->
+    fun getToppingsByCustomer(email: String): ChosenToppings =
+        customerRepository.findById(email).map { customer ->
             ChosenToppings(CustomerInfo(customer.email),
                 customer.toppings.map { topping -> topping.name })
         }.orElseThrow { ToppingsNotFoundException() }
-    }
 }

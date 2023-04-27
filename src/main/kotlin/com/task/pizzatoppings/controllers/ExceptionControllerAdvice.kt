@@ -8,18 +8,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 @ControllerAdvice
 class ExceptionControllerAdvice {
 
-    class ErrorMessageModel(
-        val status: HttpStatus? = null,
-        val exception: String? = null
+    data class ErrorMessage(
+        val status: HttpStatus,
+        val exception: String
     )
 
     @ExceptionHandler
-    fun handleIllegalStateException(ex: ToppingsNotFoundException): ResponseEntity<ErrorMessageModel> {
-
-        val errorMessage = ErrorMessageModel(
-            HttpStatus.NOT_FOUND,
-            ex.toString()
-        )
-        return ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST)
+    fun handleIllegalStateException(ex: ToppingsNotFoundException): ResponseEntity<ErrorMessage> {
+        return ResponseEntity(ErrorMessage(HttpStatus.NOT_FOUND, ex.toString()), HttpStatus.BAD_REQUEST)
     }
 }

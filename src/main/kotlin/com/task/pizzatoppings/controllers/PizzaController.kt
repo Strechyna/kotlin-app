@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @Validated
 @RestController
 @RequestMapping("/toppings")
-class PizzaController(val service: PizzaService) {
+class PizzaController(private val service: PizzaService) {
 
     @PostMapping("/")
     fun submitToppings(@Valid @RequestBody requestBody: ChosenToppings) {
@@ -23,12 +23,10 @@ class PizzaController(val service: PizzaService) {
     }
 
     @GetMapping("/")
-    fun getToppings(): Toppings {
-        return service.getAllToppings()
-    }
+    fun getToppings(): Toppings =
+        service.getAllToppings()
 
     @PostMapping("/choice")
-    fun getToppingsByCustomer(@Valid @RequestBody requestBody: CustomerInfo): ChosenToppings {
-        return service.getToppingsByCustomer(requestBody.email)
-    }
+    fun getToppingsByCustomer(@Valid @RequestBody requestBody: CustomerInfo): ChosenToppings =
+        service.getToppingsByCustomer(requestBody.email)
 }
