@@ -23,7 +23,12 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	runtimeOnly("org.postgresql:postgresql")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+		exclude(group = "org.mockito", module = "mockito-core")
+	}
+	testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.3")
+	testImplementation("com.ninja-squad:springmockk:4.0.2")
 }
 
 tasks.withType<KotlinCompile> {
