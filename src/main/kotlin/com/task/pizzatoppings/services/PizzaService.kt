@@ -1,5 +1,6 @@
 package com.task.pizzatoppings.services
 
+import com.task.pizzatoppings.controllers.ToppingsNotFoundException
 import com.task.pizzatoppings.dto.ChosenToppings
 import com.task.pizzatoppings.dto.CustomerInfo
 import com.task.pizzatoppings.dto.ToppingInfo
@@ -28,14 +29,19 @@ class PizzaService(
     }
 
     fun getAllToppings(): Toppings {
-        return Toppings(toppingRepository.getToppingCounts()
+        val toppingCounts = toppingRepository.getToppingCounts()
+        if (toppingCounts.isEmpty()) {
+            throw ToppingsNotFoundException()
+        }
+
+        return Toppings(toppingCounts
             .map { toppingCount -> ToppingInfo(toppingCount.getName(), toppingCount.getCountResult()) })
     }
 
-    fun getToppingsByCustomer(email: String): ChosenToppings? {
+    fun getToppingsByCustomer(email: String): ChosenToppings {
         return customerRepository.findById(email).map { customer ->
             ChosenToppings(CustomerInfo(customer.email),
                 customer.toppings.map { topping -> topping.name })
-        }.orElse(null)
+        }.orElseThrow { ToppingsNotFoundException() }
     }
 }
