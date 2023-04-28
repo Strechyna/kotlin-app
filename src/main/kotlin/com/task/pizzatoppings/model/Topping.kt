@@ -1,4 +1,4 @@
-package com.task.pizzatoppings.repositories.model
+package com.task.pizzatoppings.model
 
 import jakarta.persistence.Entity
 import jakarta.persistence.Id

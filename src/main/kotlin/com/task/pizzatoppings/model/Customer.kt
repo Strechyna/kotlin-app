@@ -1,4 +1,4 @@
-package com.task.pizzatoppings.repositories.model
+package com.task.pizzatoppings.model
 
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
@@ -15,8 +15,8 @@ class Customer (
 
     @ManyToMany(cascade = [CascadeType.PERSIST, CascadeType.MERGE], fetch = FetchType.EAGER)
     @JoinTable(name = "customer_topping",
-        joinColumns = [JoinColumn(name = "customer_email", referencedColumnName = "email")],
-        inverseJoinColumns = [JoinColumn(name = "topping_name", referencedColumnName = "name")])
+        joinColumns = [JoinColumn(name = "customer_email")],
+        inverseJoinColumns = [JoinColumn(name = "topping_name")])
     var toppings: MutableList<Topping> = arrayListOf()
 ) {
 
