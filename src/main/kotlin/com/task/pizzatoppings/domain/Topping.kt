@@ -1,11 +1,9 @@
 package com.task.pizzatoppings.domain
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
-import jakarta.persistence.ManyToMany
-import org.hibernate.annotations.NaturalId
 
 @Entity
 class Topping (
@@ -13,11 +11,8 @@ class Topping (
     @GeneratedValue
     val id: Long?,
 
-    @NaturalId
-    val name: String,
-
-    @ManyToMany(mappedBy = "toppings", fetch = FetchType.EAGER)
-    val customers: MutableSet<Customer> = hashSetOf()
+    @Column(nullable = false, unique = true, )
+    val name: String
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

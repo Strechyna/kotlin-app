@@ -23,34 +23,27 @@ class PizzaService(
         val customer = customerRepository.findByEmail(email)
             .orElseGet { Customer(null, email) }
 
-        customer.removeAllToppings()
+        customer.toppings.clear()
         val toppingsMap = toppingRepository.findAllByNameIn(chosenToppings.toppings)
             .associateBy({ it.name }, { it })
-        chosenToppings.toppings
+        customer.toppings = chosenToppings.toppings
             .map{toppingName -> toppingsMap.getOrElse(toppingName) { Topping(null, toppingName) } }
-            .forEach { topping -> customer.addTopping(topping)}
+            .toHashSet()
         customerRepository.save(customer)
     }
 
-    fun getToppingStatistics(): Collection<ToppingInfo> =
-        getCollectionResult({ toppingRepository.getToppingCounts() },
-            { throw ToppingsNotFoundException("Not found any toppings") })
-
-    fun getToppingsByCustomer(email: String): Collection<String> =
-        getCollectionResult({
-            toppingRepository.findAllByCustomersEmail(email)
-                .map(Topping::name)
-        }, { throw ToppingsNotFoundException("Toppings for $email not found") })
-
-    private fun<T> getCollectionResult(find: () -> Collection<T>, throwException: () -> Void): Collection<T> {
-        val result: Collection<T> = find()
-        checkListResult(result, throwException)
-        return result
+    fun getToppingStatistics(): Collection<ToppingInfo> {
+        val toppingInfoList: Collection<ToppingInfo> = toppingRepository.getToppingCounts()
+        if (toppingInfoList.isEmpty()) {
+            throw ToppingsNotFoundException("Not found any toppings")
+        }
+        return toppingInfoList
     }
 
-    private fun<T> checkListResult(result: Collection<T>, throwException: () -> Void) {
-        if (result.isEmpty()) {
-            throwException()
-        }
+    fun getToppingsByCustomer(email: String): Collection<String> {
+        val customer: Customer = customerRepository.findByEmail(email)
+            .orElseThrow{ToppingsNotFoundException("Toppings for $email not found")}
+
+        return customer.toppings.map(Topping::name)
     }
 }

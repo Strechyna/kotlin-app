@@ -8,13 +8,11 @@ import org.springframework.data.jpa.repository.Query
 interface ToppingRepository : JpaRepository<Topping, Long> {
 
     @Query("""SELECT t.name AS name,
-                     COUNT(c.id) AS numberOfRequests
-              FROM Topping AS t
-                   JOIN Customer AS c
+                     COUNT(t.name) AS numberOfRequests
+              FROM Customer AS c
+                   JOIN c.toppings AS t
               GROUP BY t.name""")
     fun getToppingCounts(): Collection<ToppingInfo>
-
-    fun findAllByCustomersEmail(email: String): Collection<Topping>
 
     fun findAllByNameIn(name: Collection<String>): Collection<Topping>
 }
