@@ -1,8 +1,8 @@
-package com.task.pizzatoppings.controllers
+package com.task.pizzatoppings.controller
 
-import com.task.pizzatoppings.dto.ChosenToppings
-import com.task.pizzatoppings.dto.ToppingInfo
-import com.task.pizzatoppings.services.PizzaService
+import com.task.pizzatoppings.model.ChosenToppings
+import com.task.pizzatoppings.model.ToppingInfo
+import com.task.pizzatoppings.service.PizzaService
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty
@@ -19,16 +19,16 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/toppings")
 class PizzaController(private val service: PizzaService) {
 
-    @PostMapping("/")
+    @PostMapping()
     fun submitToppings(@RequestBody @Valid requestBody: ChosenToppings) {
         service.submitToppings(requestBody)
     }
 
-    @GetMapping("/")
-    fun getToppings(): List<ToppingInfo> =
-        service.getAllToppings()
+    @GetMapping("/statistics")
+    fun getToppingStatistics(): Collection<ToppingInfo> =
+        service.getToppingStatistics()
 
     @GetMapping("/choice")
-    fun getToppingsByCustomer(@RequestParam("email") @Valid @Email @NotEmpty email: String): List<String> =
+    fun getToppingsByCustomer(@RequestParam("email") @Valid @Email @NotEmpty email: String): Collection<String> =
         service.getToppingsByCustomer(email)
 }

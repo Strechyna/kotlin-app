@@ -1,9 +1,9 @@
-package com.task.pizzatoppings.services
+package com.task.pizzatoppings.service
 
-import com.task.pizzatoppings.dto.ToppingInfo
-import com.task.pizzatoppings.exceptions.ToppingsNotFoundException
-import com.task.pizzatoppings.repositories.CustomerRepository
-import com.task.pizzatoppings.repositories.ToppingRepository
+import com.task.pizzatoppings.model.ToppingInfo
+import com.task.pizzatoppings.exception.ToppingsNotFoundException
+import com.task.pizzatoppings.repository.CustomerRepository
+import com.task.pizzatoppings.repository.ToppingRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -23,7 +23,7 @@ class PizzaServiceTest {
             getToppingInfo("topping2", 4)
         )
 
-        val result = service.getAllToppings()
+        val result = service.getToppingStatistics()
 
         verify(exactly = 1) { toppingRepository.getToppingCounts() }
         assertNotNull(result)
@@ -36,7 +36,7 @@ class PizzaServiceTest {
         every { toppingRepository.getToppingCounts() } returns listOf()
 
         val thrown: ToppingsNotFoundException = assertThrows(ToppingsNotFoundException::class.java) {
-            service.getAllToppings()
+            service.getToppingStatistics()
         }
 
         assertEquals("Not found any toppings", thrown.message)

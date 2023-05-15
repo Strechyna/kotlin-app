@@ -1,4 +1,4 @@
-package com.task.pizzatoppings.dto
+package com.task.pizzatoppings.model
 
 interface ToppingInfo {
     val name: String

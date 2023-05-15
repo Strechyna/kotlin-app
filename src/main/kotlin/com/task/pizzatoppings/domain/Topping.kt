@@ -1,16 +1,23 @@
-package com.task.pizzatoppings.model
+package com.task.pizzatoppings.domain
 
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToMany
+import org.hibernate.annotations.NaturalId
 
 @Entity
 class Topping (
     @Id
+    @GeneratedValue
+    val id: Long?,
+
+    @NaturalId
     val name: String,
 
-    @ManyToMany(mappedBy = "toppings")
-    val customers: MutableList<Customer> = arrayListOf()
+    @ManyToMany(mappedBy = "toppings", fetch = FetchType.EAGER)
+    val customers: MutableSet<Customer> = hashSetOf()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
