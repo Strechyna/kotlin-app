@@ -1,9 +1,9 @@
-package com.task.pizzatoppings.services
+package com.task.pizzatoppings.service
 
-import com.task.pizzatoppings.controllers.ToppingsNotFoundException
-import com.task.pizzatoppings.repositories.CustomerRepository
-import com.task.pizzatoppings.repositories.ToppingRepository
-import com.task.pizzatoppings.repositories.model.ToppingCount
+import com.task.pizzatoppings.model.ToppingInfo
+import com.task.pizzatoppings.exception.ToppingsNotFoundException
+import com.task.pizzatoppings.repository.CustomerRepository
+import com.task.pizzatoppings.repository.ToppingRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -19,16 +19,16 @@ class PizzaServiceTest {
     @Test
     fun whenGetToppingCounts_thenReturnToppings() {
         every { toppingRepository.getToppingCounts() } returns listOf(
-            getToppingCount("topping1", 3),
-            getToppingCount("topping2", 4)
+            getToppingInfo("topping1", 3),
+            getToppingInfo("topping2", 4)
         )
 
-        val result = service.getAllToppings()
+        val result = service.getToppingStatistics()
 
         verify(exactly = 1) { toppingRepository.getToppingCounts() }
         assertNotNull(result)
-        assertFalse(result.toppings.isEmpty())
-        assertEquals(2, result.toppings.size)
+        assertFalse(result.isEmpty())
+        assertEquals(2, result.size)
     }
 
     @Test
@@ -36,16 +36,18 @@ class PizzaServiceTest {
         every { toppingRepository.getToppingCounts() } returns listOf()
 
         val thrown: ToppingsNotFoundException = assertThrows(ToppingsNotFoundException::class.java) {
-            service.getAllToppings()
+            service.getToppingStatistics()
         }
 
         assertEquals("Not found any toppings", thrown.message)
     }
 
-    private fun getToppingCount(name: String, count: Int): ToppingCount {
-        return object : ToppingCount {
-            override fun getName() = name
-            override fun getCountResult() = count
+    private fun getToppingInfo(name: String, count: Int): ToppingInfo {
+        return object : ToppingInfo {
+            override val name: String
+                get() = name
+            override val numberOfRequests: Int
+                get() = count
         }
     }
 

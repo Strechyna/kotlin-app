@@ -1,16 +1,18 @@
-package com.task.pizzatoppings.repositories.model
+package com.task.pizzatoppings.domain
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
-import jakarta.persistence.ManyToMany
 
 @Entity
 class Topping (
     @Id
-    val name: String,
+    @GeneratedValue
+    val id: Long?,
 
-    @ManyToMany(mappedBy = "toppings")
-    val customers: MutableList<Customer> = arrayListOf()
+    @Column(nullable = false, unique = true, )
+    val name: String
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
